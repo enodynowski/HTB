@@ -37,7 +37,8 @@ It's still kind of ugly though. To clean it up some more let's take those variab
 	function x($t,$k){
 		$c=strlen($k);
 		$l=strlen($t);
-		$o="";for($i=0;$i<$l;){
+		$o="";
+        for($i=0;$i<$l;){
 			for($j=0;($j<$c&&$i<$l);$j++,$i++){
 				$o.=$t{$i}^$k{$j};
 			}
@@ -57,7 +58,7 @@ It's still kind of ugly though. To clean it up some more let's take those variab
 
 To break it down, we've got 4 variables at the top that look kinda like gibberish, which they are, pretty much.... The function called `x()` just XOR's two strings together and returns the XOR'd string. 
 
-Then we do an if statement to do a regex check and see if the string read from stdin (in this case that is referenced as `php://input`) matches the format of our variable `$kh + ` some stuff `+ $kf`. If the check passes, we take the input string, base64 decode it, XOR it with the variable `$k` gzuncompress it, then eval and put it in a variable called `$o`. Lovely. Then we'll take another variable called `$r` and in ther we'll re-compress `$o`, XOR it with `$k` again, then re-encode it with base64, then print out the whole thing with some other fun stuff appended.
+Then we do an if statement to do a regex check and see if the string read from stdin (in this case that is referenced as `php://input`) matches the format of our variable `$kh + ` some stuff `+ $kf`. If the check passes, we take the input string, base64 decode it, XOR it with the variable `$k` gzuncompress it, then eval and put it in a variable called `$o`. Lovely. Then we'll take another variable called `$r` and in there we'll re-compress `$o`, XOR it with `$k` again, then re-encode it with base64, then print out the whole thing with some other fun stuff appended.
 
 #### The pcap file
 
@@ -126,13 +127,13 @@ Additionally, there was a really long response in one of the TCP streams, which,
 
 Lets base64 decode it, since its clearly base64 encoded, and see what on earth it is. I wrote it to a file and ran `file` on it, and lo, it's a keepass database:
 
-`pass.kbdx: Keepass password database 2.x KDBX`
+`pass.kdbx: Keepass password database 2.x KDBX`
 
 #### Password Cracking
 
 I took oru password database that we have and used the tool that comes with kali called `keepass2john` to extract the password hash from it. I wrote it to a file. 
 
-`keepass2john pass.kbdx > htb4john.txt`
+`keepass2john pass.kdbx > htb4john.txt`
 
 Then, it's as easy as running your hash-cracking tool of choice to crack the hash
 
@@ -145,7 +146,7 @@ Cost 2 (version) is 2 for all loaded hashes
 Cost 3 (algorithm [0=AES 1=TwoFish 2=ChaCha]) is 0 for all loaded hashes
 Will run 12 OpenMP threads
 Press 'q' or Ctrl-C to abort, almost any other key for status
-do_it_yourself >:(         (pass.kbdx)     
+do_it_yourself >:(         (pass.kdbx)     
 1g 0:00:00:06 DONE (2023-10-16 00:04) 0.1626g/s 3488p/s 3488c/s 3488C/s fungus..bliss
 Use the "--show" option to display all of the cracked passwords reliably
 Session completed. 
